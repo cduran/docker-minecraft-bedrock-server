@@ -2,6 +2,7 @@ FROM debian
 
 # ARCH is only set to avoid repetition in Dockerfile since the binary download only supports amd64
 ARG ARCH=amd64
+ARG CUSTOM_PORT=19132
 
 RUN apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -11,7 +12,7 @@ RUN apt-get update && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-EXPOSE 19132/udp
+EXPOSE ${CUSTOM_PORT}/udp
 
 VOLUME ["/data"]
 
@@ -41,6 +42,6 @@ COPY property-definitions.json /etc/bds-property-definitions.json
 # https://minecraft.gamepedia.com/Bedrock_Edition_1.13.0
 # https://minecraft.gamepedia.com/Bedrock_Edition_1.14.0
 ENV VERSION=LATEST \
-    SERVER_PORT=19132
+    SERVER_PORT=${CUSTOM_PORT}
 
 HEALTHCHECK --start-period=1m CMD /usr/local/bin/mc-monitor status-bedrock --host localhost --port $SERVER_PORT
